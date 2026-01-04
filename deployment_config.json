@@ -1,0 +1,101 @@
+{
+  "deployment_name": "lyrics-training-notebook-deployment",
+  "description": "One-click deployment configuration for lyrics training notebook",
+  "version": "1.0.0",
+  "azure_ml_workspace": {
+    "subscription_id": "${AZURE_SUBSCRIPTION_ID}",
+    "resource_group": "${AZURE_RESOURCE_GROUP}",
+    "workspace_name": "${AZURE_WORKSPACE_NAME}",
+    "location": "${AZURE_LOCATION}"
+  },
+  "compute": {
+    "compute_target_name": "cpu-cluster",
+    "vm_size": "STANDARD_D2_V2",
+    "min_nodes": 0,
+    "max_nodes": 4,
+    "idle_seconds_before_scaledown": 120
+  },
+  "blob_storage": {
+    "storage_account_name": "${STORAGE_ACCOUNT_NAME}",
+    "storage_account_key": "${STORAGE_ACCOUNT_KEY}",
+    "connection_string": "${AZURE_STORAGE_CONNECTION_STRING}",
+    "container_name": "lyrics",
+    "blob_name": "lyrics.txt",
+    "description": "Azure Blob Storage containing the lyrics text file for training"
+  },
+  "notebook": {
+    "name": "lyrics_training_notebook.ipynb",
+    "path": "lyrics_training_notebook.ipynb",
+    "kernel": "python3",
+    "description": "Jupyter notebook for training text generation model on lyrics"
+  },
+  "model": {
+    "name": "lyrics-text-generation-model",
+    "framework": "tensorflow",
+    "type": "text-generation",
+    "description": "LSTM-based text generation model trained on lyrics",
+    "output_directory": "outputs"
+  },
+  "training": {
+    "experiment_name": "lyrics-training-experiment",
+    "epochs": 50,
+    "batch_size": 64,
+    "optimizer": "adam",
+    "loss": "categorical_crossentropy"
+  },
+  "deployment_options": {
+    "auto_deploy": false,
+    "deployment_type": "ACI",
+    "service_name": "lyrics-generation-service",
+    "cpu_cores": 1,
+    "memory_gb": 2,
+    "enable_app_insights": true,
+    "description": "Optional deployment to Azure ML endpoint for real-time inference"
+  },
+  "environment": {
+    "name": "lyrics-training-env",
+    "python_version": "3.8",
+    "dependencies": [
+      "azureml-core",
+      "azure-storage-blob",
+      "tensorflow>=2.10.0",
+      "numpy",
+      "pandas",
+      "scikit-learn"
+    ]
+  },
+  "instructions": {
+    "setup": [
+      "1. Update the azure_ml_workspace section with your Azure ML workspace details",
+      "2. Update the blob_storage section with your Azure Storage account details",
+      "3. Ensure your lyrics.txt file is uploaded to the specified blob container",
+      "4. Open the notebook in Azure ML Studio or Jupyter"
+    ],
+    "deployment": [
+      "1. Execute all cells in sequence from top to bottom",
+      "2. The notebook will automatically connect to your workspace",
+      "3. Data will be loaded from blob storage",
+      "4. Model will be trained and registered automatically",
+      "5. Set DEPLOY_MODEL=True in section 8 to deploy to endpoint (optional)"
+    ],
+    "configuration": [
+      "Environment variables can be set instead of hardcoding values:",
+      "- AZURE_SUBSCRIPTION_ID",
+      "- AZURE_RESOURCE_GROUP",
+      "- AZURE_WORKSPACE_NAME",
+      "- STORAGE_ACCOUNT_NAME",
+      "- STORAGE_ACCOUNT_KEY",
+      "- AZURE_STORAGE_CONNECTION_STRING",
+      "- BLOB_CONTAINER_NAME",
+      "- BLOB_NAME"
+    ]
+  },
+  "outputs": {
+    "model_files": [
+      "outputs/lyrics_model.h5",
+      "outputs/tokenizer_config.json"
+    ],
+    "registered_model": "Model will be registered in Azure ML workspace",
+    "deployment_endpoint": "Optional: Scoring URI will be provided if deployed"
+  }
+}
