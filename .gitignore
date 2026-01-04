@@ -30,6 +30,9 @@ deployment/
 .azureml/
 best_model.h5
 
+# Configuration (contains sensitive data)
+config.json
+
 # Environment
 .env
 .venv
